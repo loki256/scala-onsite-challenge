@@ -10,6 +10,9 @@ object Boot {
     implicit val system = ActorSystem("simple-dsp")
     implicit val materializer = ActorMaterializer()
 
-    Http().bindAndHandle(DspFrontend(), "localhost", 8080)
+    val campaignHolder = system.actorOf(Props(classOf[CampaignBudgetHolder], 20000), name="campaignHolder")
+    val router = new DspFrontend(campaignHolder)
+
+    Http().bindAndHandle(router(), "localhost", 8080)
   }
 }
